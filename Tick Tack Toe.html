@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Games & Features</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .game-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        /* Tic Tac Toe Styles */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            max-width: 300px;
+        }
+
+        .cell {
+            width: 90px;
+            height: 90px;
+            background: #f0f0f0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #667eea;
+        }
+
+        .cell:hover {
+            background: #e8e8ff;
+            transform: scale(1.05);
+        }
+
+        .cell.x {
+            color: #667eea;
+        }
+
+        .cell.o {
+            color: #764ba2;
+        }
+
+        .status {
+            font-size: 1.2em;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #333;
+            height: 30px;
+        }
+
+        /* Rock Paper Scissors Styles */
+        .choices {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .choice-btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .choice-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Memory Game Styles */
+        .memory-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 350px;
+        }
+
+        .memory-card {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .memory-card.matched {
+            background: #4caf50;
+            cursor: default;
+            color: white;
+        }
+
+        /* Number Guessing Game */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        button {
+            padding: 10px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feedback.hot {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .feedback.warm {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .feedback.cold {
+            background: #e3f2fd;
+            color: #01579b;
+        }
+
+        .feedback.perfect {
+            background: #e8f5e9;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        /* Quick Math */
+        .math-display {
+            font-size: 1.8em;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .math-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .math-inputs input {
+            width: 80px;
+        }
+
+        /* Common Styles */
+        .reset-btn {
+            background: #764ba2;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            background: #667eea;
+        }
+
+        .stats {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .board {
+                margin: 20px auto;
+            }
+
+            .memory-board {
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 Interactive Games & Features</h1>
+            <p>Test & Play Games in Real-Time with Friends or Solo!</p>
+        </header>
+
+        <div class="games-grid">
+            <!-- Tic Tac Toe -->
+            <div class="game-card">
+                <h2>🎯 Tic Tac Toe</h2>
+                <p>Classic 2-player game. Player X goes first!</p>
+                <div class="board" id="tictactoeBoard"></div>
+                <div class="status" id="tictactoeStatus">Player X's Turn</div>
+                <button class="reset-btn" onclick="resetTicTacToe()">Reset Game</button>
+                <div class="stats" id="tictactoeStats">X: 0 | O: 0 | Draws: 0</div>
+            </div>
+
+            <!-- Rock Paper Scissors -->
+            <div class="game-card">
+                <h2>✋ Rock Paper Scissors</h2>
+                <p>Play against the computer!</p>
+                <div class="choices">
+                    <button class="choice-btn" onclick="playRPS('rock')">🪨 Rock</button>
+                    <button class="choice-btn" onclick="playRPS('paper')">📄 Paper</button>
+                    <button class="choice-btn" onclick="playRPS('scissors')">✂️ Scissors</button>
+                </div>
+                <div class="result" id="rpsResult">Make your choice!</div>
+                <div class="stats" id="rpsStats">Wins: 0 | Losses: 0 | Draws: 0</div>
+            </div>
+
+            <!-- Memory Game -->
+            <div class="game-card">
+                <h2>🧠 Memory Game</h2>
+                <p>Find all matching pairs!</p>
+                <div class="memory-board" id="memoryBoard"></div>
+                <div class="feedback" id="memoryFeedback">Find matching pairs</div>
+                <button class="reset-btn" onclick="resetMemoryGame()">Reset Game</button>
+                <div class="stats" id="memoryStats">Moves: 0 | Matched: 0/8</div>
+            </div>
+
+            <!-- Number Guessing -->
+            <div class="game-card">
+                <h2>🔢 Guess the Number</h2>
+                <p>I'm thinking of a number between 1-100. Can you guess it?</p>
+                <div class="input-group">
+                    <input type="number" id="guessInput" placeholder="Enter your guess" min="1" max="100">
+                    <button onclick="makeGuess()">Guess!</button>
+                </div>
+                <div class="feedback" id="guessFeedback">Good luck!</div>
+                <div class="stats" id="guessStats">Attempts: 0 | Best Score: ∞</div>
+            </div>
+
+            <!-- Quick Math -->
+            <div class="game-card">
+                <h2>🧮 Quick Math</h2>
+                <p>Solve math problems as fast as you can!</p>
+                <div class="math-display" id="mathProblem">Click Start!</div>
+                <div class="math-inputs">
+                    <input type="number" id="mathAnswer" placeholder="Your answer">
+                    <button onclick="checkMath()">Check</button>
+                </div>
+                <button class="reset-btn" onclick="startNewMath()">Start Game</button>
+                <div class="stats" id="mathStats">Score: 0 | Streak: 0</div>
+            </div>
+
+            <!-- Dice Roller -->
+            <div class="game-card">
+                <h2>🎲 Dice Roller</h2>
+                <p>Roll dice and test your luck!</p>
+                <div class="choices">
+                    <button class="choice-btn" onclick="rollDice(1)">Roll d6</button>
+                    <button class="choice-btn" onclick="rollDice(2)">Roll 2d6</button>
+                    <button class="choice-btn" onclick="rollDice(3)">Roll 3d6</button>
+                </div>
+                <div class="result" id="diceResult">Roll the dice!</div>
+                <div class="stats" id="diceStats">Total Rolls: 0 | Average: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Made with ❤️ | Test all features and have fun!</p>
+    </footer>
+
+    <script>
+        // ========== TIC TAC TOE ==========
+        let tictactoeGame = {
+            board: Array(9).fill(''),
+            currentPlayer: 'X',
+            gameActive: true,
+            stats: { x: 0, o: 0, draws: 0 }
+        };
+
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        function initTicTacToe() {
+            const board = document.getElementById('tictactoeBoard');
+            board.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = () => playTicTacToe(i);
+                cell.textContent = tictactoeGame.board[i];
+                board.appendChild(cell);
+            }
+            updateTicTacToeDisplay();
+        }
+
+        function playTicTacToe(index) {
+            if (!tictactoeGame.gameActive || tictactoeGame.board[index]) return;
+            
+            tictactoeGame.board[index] = tictactoeGame.currentPlayer;
+            
+            if (checkTicTacToeWin()) {
+                tictactoeGame.stats[tictactoeGame.currentPlayer.toLowerCase()]++;
+                tictactoeGame.gameActive = false;
+                document.getElementById('tictactoeStatus').textContent = `🎉 Player ${tictactoeGame.currentPlayer} Wins!`;
+            } else if (tictactoeGame.board.every(cell => cell)) {
+                tictactoeGame.stats.draws++;
+                tictactoeGame.gameActive = false;
+                document.getElementById('tictactoeStatus').textContent = "It's a Draw!";
+            } else {
+                tictactoeGame.currentPlayer = tictactoeGame.currentPlayer === 'X' ? 'O' : 'X';
+                updateTicTacToeDisplay();
+            }
+            
+            initTicTacToe();
+        }
+
+        function checkTicTacToeWin() {
+            return winningConditions.some(condition =>
+                condition.every(i => tictactoeGame.board[i] === tictactoeGame.currentPlayer)
+            );
+        }
+
+        function updateTicTacToeDisplay() {
+            document.getElementById('tictactoeStatus').textContent = `Player ${tictactoeGame.currentPlayer}'s Turn`;
+        }
+
+        function resetTicTacToe() {
+            tictactoeGame.board = Array(9).fill('');
+            tictactoeGame.currentPlayer = 'X';
+            tictactoeGame.gameActive = true;
+            updateTicTacToeDisplay();
+            initTicTacToe();
+            updateTicTacToeStats();
+        }
+
+        function updateTicTacToeStats() {
+            document.getElementById('tictactoeStats').textContent = 
+                `X: ${tictactoeGame.stats.x} | O: ${tictactoeGame.stats.o} | Draws: ${tictactoeGame.stats.draws}`;
+        }
+
+        // ========== ROCK PAPER SCISSORS ==========
+        let rpsStats = { wins: 0, losses: 0, draws: 0 };
+
+        function playRPS(playerChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * 3)];
+            let result = '';
+
+            if (playerChoice === computerChoice) {
+                result = "It's a Draw!";
+                rpsStats.draws++;
+            } else if (
+                (playerChoice === 'rock' && computerChoice === 'scissors') ||
+                (playerChoice === 'paper' && computerChoice === 'rock') ||
+                (playerChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                result = '🎉 You Win!';
+                rpsStats.wins++;
+            } else {
+                result = '😢 You Lose!';
+                rpsStats.losses++;
+            }
+
+            const resultDiv = document.getElementById('rpsResult');
+            resultDiv.innerHTML = `<strong>You chose:</strong> ${playerChoice}<br><strong>Computer chose:</strong> ${computerChoice}<br><strong>Result:</strong> ${result}`;
+            updateRPSStats();
+        }
+
+        function updateRPSStats() {
+            document.getElementById('rpsStats').textContent =
+                `Wins: ${rpsStats.wins} | Losses: ${rpsStats.losses} | Draws: ${rpsStats.draws}`;
+        }
+
+        // ========== MEMORY GAME ==========
+        let memoryGame = {
+            cards: [],
+            flipped: [],
+            matched: 0,
+            moves: 0,
+            lockBoard: false
+        };
+
+        const memorySymbols = ['🌟', '🎨', '🎭', '🎪', '🎸', '🎬', '🎲', '🎯'];
+
+        function initMemoryGame() {
+            memoryGame.cards = [...memorySymbols, ...memorySymbols].sort(() => Math.random() - 0.5);
+            memoryGame.flipped = [];
+            memoryGame.matched = 0;
+            memoryGame.moves = 0;
+            memoryGame.lockBoard = false;
+            renderMemoryBoard();
+            updateMemoryStats();
+        }
+
+        function renderMemoryBoard() {
+            const board = document.getElementById('memoryBoard');
+            board.innerHTML = '';
+            memoryGame.cards.forEach((card, index) => {
+                const cardEl = document.createElement('button');
+                cardEl.className = 'memory-card';
+                cardEl.onclick = () => flipCard(index);
+                
+                if (memoryGame.flipped.includes(index)) {
+                    cardEl.classList.add('flipped');
+                    cardEl.textContent = card;
+                } else if (memoryGame.matched >= memoryGame.cards.length / 2) {
+                    cardEl.classList.add('matched');
+                    cardEl.textContent = card;
+                }
+                
+                board.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(index) {
+            if (memoryGame.lockBoard || memoryGame.flipped.includes(index) || memoryGame.flipped.length >= 2) return;
+
+            memoryGame.flipped.push(index);
+            renderMemoryBoard();
+
+            if (memoryGame.flipped.length === 2) {
+                memoryGame.moves++;
+                const [first, second] = memoryGame.flipped;
+
+                if (memoryGame.cards[first] === memoryGame.cards[second]) {
+                    memoryGame.matched++;
+                    memoryGame.flipped = [];
+                    document.getElementById('memoryFeedback').textContent = '✅ Match found!';
+                    
+                    if (memoryGame.matched === memoryGame.cards.length / 2) {
+                        document.getElementById('memoryFeedback').textContent = `🎉 You won in ${memoryGame.moves} moves!`;
+                    }
+                    updateMemoryStats();
+                } else {
+                    memoryGame.lockBoard = true;
+                    document.getElementById('memoryFeedback').textContent = '❌ No match!';
+                    setTimeout(() => {
+                        memoryGame.flipped = [];
+                        memoryGame.lockBoard = false;
+                        renderMemoryBoard();
+                    }, 1000);
+                }
+                updateMemoryStats();
+            }
+        }
+
+        function updateMemoryStats() {
+            document.getElementById('memoryStats').textContent =
+                `Moves: ${memoryGame.moves} | Matched: ${memoryGame.matched}/8`;
+        }
+
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+
+        // ========== NUMBER GUESSING ==========
+        let guessGame = {
+            secretNumber: 0,
+            attempts: 0,
+            bestScore: Infinity,
+            minScore: 1,
+            maxScore: 100
+        };
+
+        function startGuessGame() {
+            guessGame.secretNumber = Math.floor(Math.random() * (guessGame.maxScore - guessGame.minScore + 1)) + guessGame.minScore;
+            guessGame.attempts = 0;
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessFeedback').className = 'feedback';
+            document.getElementById('guessFeedback').textContent = 'Good luck! Guess a number between 1-100';
+            updateGuessStats();
+        }
+
+        function makeGuess() {
+            const guess = parseInt(document.getElementById('guessInput').value);
+            if (!guess) return;
+
+            guessGame.attempts++;
+            const feedback = document.getElementById('guessFeedback');
+            const diff = Math.abs(guess - guessGame.secretNumber);
+
+            if (guess === guessGame.secretNumber) {
+                feedback.className = 'feedback perfect';
+                feedback.textContent = `🎉 Correct! It took you ${guessGame.attempts} attempts!`;
+                if (guessGame.attempts < guessGame.bestScore) {
+                    guessGame.bestScore = guessGame.attempts;
+                }
+                setTimeout(startGuessGame, 2000);
+            } else if (diff <= 5) {
+                feedback.className = 'feedback hot';
+                feedback.textContent = guess > guessGame.secretNumber ? '🔥 Hot! Go lower' : '🔥 Hot! Go higher';
+            } else if (diff <= 15) {
+                feedback.className = 'feedback warm';
+                feedback.textContent = guess > guessGame.secretNumber ? '🌡️ Warm! Go lower' : '🌡️ Warm! Go higher';
+            } else {
+                feedback.className = 'feedback cold';
+                feedback.textContent = guess > guessGame.secretNumber ? '❄️ Cold! Go much lower' : '❄️ Cold! Go much higher';
+            }
+
+            updateGuessStats();
+            document.getElementById('guessInput').value = '';
+        }
+
+        function updateGuessStats() {
+            const bestText = guessGame.bestScore === Infinity ? '∞' : guessGame.bestScore;
+            document.getElementById('guessStats').textContent =
+                `Attempts: ${guessGame.attempts} | Best Score: ${bestText}`;
+        }
+
+        // ========== QUICK MATH ==========
+        let mathGame = {
+            score: 0,
+            streak: 0,
+            problem: null
+        };
+
+        function generateMathProblem() {
+            const num1 = Math.floor(Math.random() * 20) + 1;
+            const num2 = Math.floor(Math.random() * 20) + 1;
+            const operators = ['+', '-', '*'];
+            const operator = operators[Math.floor(Math.random() * operators.length)];
+
+            let answer;
+            switch(operator) {
+                case '+': answer = num1 + num2; break;
+                case '-': answer = num1 - num2; break;
+                case '*': answer = num1 * num2; break;
+            }
+
+            mathGame.problem = { num1, num2, operator, answer };
+            document.getElementById('mathProblem').textContent = `${num1} ${operator} ${num2} = ?`;
+            document.getElementById('mathAnswer').value = '';
+            document.getElementById('mathAnswer').focus();
+        }
+
+        function checkMath() {
+            if (!mathGame.problem) return;
+
+            const userAnswer = parseInt(document.getElementById('mathAnswer').value);
+            if (userAnswer === mathGame.problem.answer) {
+                mathGame.score += 10;
+                mathGame.streak++;
+                document.getElementById('mathAnswer').style.background = '#c8e6c9';
+            } else {
+                mathGame.streak = 0;
+                document.getElementById('mathAnswer').style.background = '#ffcdd2';
+            }
+
+            updateMathStats();
+            setTimeout(() => {
+                document.getElementById('mathAnswer').style.background = 'white';
+                generateMathProblem();
+            }, 500);
+        }
+
+        function startNewMath() {
+            mathGame.score = 0;
+            mathGame.streak = 0;
+            generateMathProblem();
+            updateMathStats();
+        }
+
+        function updateMathStats() {
+            document.getElementById('mathStats').textContent =
+                `Score: ${mathGame.score} | Streak: ${mathGame.streak}`;
+        }
+
+        // ========== DICE ROLLER ==========
+        let diceStats = { totalRolls: 0, totalSum: 0 };
+
+        function rollDice(count) {
+            let rolls = [];
+            for (let i = 0; i < count; i++) {
+                rolls.push(Math.floor(Math.random() * 6) + 1);
+            }
+
+            const sum = rolls.reduce((a, b) => a + b, 0);
+            diceStats.totalRolls += count;
+            diceStats.totalSum += sum;
+
+            const resultDiv = document.getElementById('diceResult');
+            resultDiv.innerHTML = `<strong>Rolled:</strong> ${rolls.join(', ')}<br><strong>Sum:</strong> ${sum}`;
+            updateDiceStats();
+        }
+
+        function updateDiceStats() {
+            const average = diceStats.totalRolls > 0 ? (diceStats.totalSum / diceStats.totalRolls).toFixed(2) : 0;
+            document.getElementById('diceStats').textContent =
+                `Total Rolls: ${diceStats.totalRolls} | Average: ${average}`;
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initTicTacToe();
+            updateTicTacToeStats();
+            initMemoryGame();
+            startGuessGame();
+            document.getElementById('guessInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') makeGuess();
+            });
+            document.getElementById('mathAnswer').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkMath();
+            });
+        });
+    </script>
+</body>
+</html>
